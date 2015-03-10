@@ -6,6 +6,29 @@
 </head>
 <body>
 
+<%
+    String logout = request.getParameter("logout");
+    if (logout != null) {
+        session.removeAttribute("auth");
+    }
+
+    String login = request.getParameter("login");
+    String password = request.getParameter("password");
+
+    if (login != null && password != null) {
+        LoginForm loginForm = new LoginForm();
+        if (loginForm.checkPassword(login, password)) {
+            session.setAttribute("auth", "OK");
+        } else {
+            session.removeAttribute("auth");
+        }
+    }
+%>
+
+<%
+    Object auth = session.getAttribute("auth");
+    if (auth == null || !auth.equals("OK")) { %>
+
 <form action="index.jsp" method="get">
     <div>
         <label for="login">
@@ -23,11 +46,16 @@
 
     <input type="submit" name="submit"/>
 </form>
-
 <%
-    LoginForm loginForm = new LoginForm();
-    loginForm.checkPassword();
+} else {
 %>
+
+Вы вошли на сайт!
+
+<a href="index.jsp?logout">Выйти :)</a>
+
+<% } %>
+
 
 </body>
 </html>
